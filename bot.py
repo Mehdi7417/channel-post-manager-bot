@@ -40,8 +40,8 @@ class Bot:
         if usr_post.text:
             message_type = "text"
             cursor.execute(
-                "INSERT INTO users (CHAT_ID ,  MESSAGE_ID , TEXT_USER , MESSAGE_TYPE ) VALUES (? , ? , ? , ? )",
-                (usr_post.chat_id, usr_post.message_id, usr_post.text, message_type),
+                "INSERT INTO users (CHAT_ID ,  MESSAGE_ID , TEXT_USER , MESSAGE_TYPE ,COUNT_HEART ) VALUES (? , ? , ? , ? , ? )",
+                (usr_post.chat_id, usr_post.message_id, usr_post.text, message_type, 0),
             )
             connection.commit()
         elif usr_post.photo:
@@ -49,13 +49,14 @@ class Bot:
             file_id = usr_post.photo[-1].file_id
             caption = usr_post.caption or ""
             cursor.execute(
-                "INSERT INTO users (CHAT_ID , MESSAGE_ID, FILE_ID , TEXT_USER , MESSAGE_TYPE) VALUES (? , ? , ? , ? , ?)",
+                "INSERT INTO users (CHAT_ID , MESSAGE_ID, FILE_ID , TEXT_USER , MESSAGE_TYPE , COUNT_HEART) VALUES (? , ? , ? , ? , ? , ?)",
                 (
                     usr_post.chat_id,
                     usr_post.message_id,
                     file_id,
                     caption,
                     message_type,
+                    0,
                 ),
             )
             connection.commit()
@@ -64,13 +65,14 @@ class Bot:
             caption = usr_post.caption or ""
             message_type = "video"
             cursor.execute(
-                "INSERT INTO users (CHAT_ID , MESSAGE_ID , FILE_ID , TEXT_USER , MESSAGE_TYPE) VALUES (? , ? , ? , ? , ?)",
+                "INSERT INTO users (CHAT_ID , MESSAGE_ID , FILE_ID , TEXT_USER , MESSAGE_TYPE , COUNT_HEART) VALUES (? , ? , ? , ? , ? , ?)",
                 (
                     usr_post.chat_id,
                     usr_post.message_id,
                     file_id,
                     caption,
                     message_type,
+                    0,
                 ),
             )
             connection.commit()
@@ -79,13 +81,14 @@ class Bot:
             caption = usr_post.caption or ""
             message_type = "audio"
             cursor.execute(
-                "INSERT INTO users (CHAT_ID , MESSAGE_ID , FILE_ID , TEXT_USER , MESSAGE_TYPE) VALUES (? , ? , ? , ? , ?)",
+                "INSERT INTO users (CHAT_ID , MESSAGE_ID , FILE_ID , TEXT_USER , MESSAGE_TYPE , COUNT_HEART) VALUES (? , ? , ? , ? , ? , ?)",
                 (
                     usr_post.chat_id,
                     usr_post.message_id,
                     file_id,
                     caption,
                     message_type,
+                    0,
                 ),
             )
             connection.commit()
@@ -214,7 +217,6 @@ class Bot:
         result = cursor.fetchone()
         cursor.execute("SELECT PROXY FROM proxy ORDER BY ID DESC LIMIT 1")
         proxy = cursor.fetchone()
-        connection.close()
 
         proxy_text = f'<a href="{proxy[0]}">👈🏻 اتصال به پروکسی </a>'
         chat_id, file_id, text_user, message_type, count_heart = result
@@ -231,6 +233,13 @@ class Bot:
             await context.bot.delete_message(
                 chat_id=query.message.chat.id, message_id=query.message.message_id
             )
+            count_heart += 1
+            cursor.execute(
+                "UPDATE users SET COUNT_HEART = ? WHERE CHAT_ID = ?",
+                (count_heart, chat_id),
+            )
+            connection.commit()
+            connection.close()
         elif action == "approve" and message_type == "photo":
             await context.bot.send_photo(
                 chat_id=self.channel_id,
@@ -241,6 +250,13 @@ class Bot:
             await context.bot.delete_message(
                 chat_id=query.message.chat.id, message_id=query.message.message_id
             )
+            count_heart += 1
+            cursor.execute(
+                "UPDATE users SET COUNT_HEART = ? WHERE CHAT_ID = ?",
+                (count_heart, chat_id),
+            )
+            connection.commit()
+            connection.close()
         elif action == "approve" and message_type == "video":
             await context.bot.send_video(
                 chat_id=self.channel_id,
@@ -251,6 +267,13 @@ class Bot:
             await context.bot.delete_message(
                 chat_id=query.message.chat.id, message_id=query.message.message_id
             )
+            count_heart += 1
+            cursor.execute(
+                "UPDATE users SET COUNT_HEART = ? WHERE CHAT_ID = ?",
+                (count_heart, chat_id),
+            )
+            connection.commit()
+            connection.close()
         elif action == "approve" and message_type == "audio":
             await context.bot.send_audio(
                 chat_id=self.channel_id,
@@ -261,6 +284,13 @@ class Bot:
             await context.bot.delete_message(
                 chat_id=query.message.chat.id, message_id=query.message.message_id
             )
+            count_heart += 1
+            cursor.execute(
+                "UPDATE users SET COUNT_HEART = ? WHERE CHAT_ID = ?",
+                (count_heart, chat_id),
+            )
+            connection.commit()
+            connection.close()
         if action == "Reject":
             await context.bot.delete_message(
                 chat_id=query.message.chat.id, message_id=query.message.message_id
