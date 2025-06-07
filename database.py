@@ -1,8 +1,8 @@
-import sqlite3
+# import sqlite3
 
-conn = sqlite3.connect("users.db")
+# conn = sqlite3.connect("users.db")
 
-cursor = conn.cursor()
+# cursor = conn.cursor()
 
 
 # cursor.execute(
@@ -19,14 +19,14 @@ cursor = conn.cursor()
 #     """
 # )
 
-cursor.execute(
-    """
-    CREATE TABLE proxy (
-        ID INTEGER PRIMARY KEY AUTOINCREMENT ,
-        PROXY TEXT
-    )
-               """
-)
+# cursor.execute(
+#     """
+#     CREATE TABLE proxy (
+#         ID INTEGER PRIMARY KEY AUTOINCREMENT ,
+#         PROXY TEXT
+#     )
+#                """
+# )
 
-conn.commit()
-conn.close()
+# conn.commit()
+# conn.close()

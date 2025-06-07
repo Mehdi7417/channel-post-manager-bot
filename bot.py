@@ -306,12 +306,12 @@ class Bot:
         )
 
     def run_bot(self):
-        print("bot starting Mr meti ...  ✅🫡")
+        print("bot starting Mr LostInTheVoid{} ...  ✅🫡")
         self.app.run_polling()
 
 
 if __name__ == "__main__":
-    with open("token.txt", "r") as file:
-        token = file.read()
-    bot = Bot(token, "-1002633533356", "-1002582145804", "ID : @Configs_center 💫")
+    with open("token.txt", "r", encoding="utf-8") as file:
+        token, gap_admin, channel_id, channel_username = [line.strip() for line in file]
+    bot = Bot(token, gap_admin, channel_id, channel_username)
     bot.run_bot()
